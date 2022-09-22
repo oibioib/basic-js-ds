@@ -64,6 +64,14 @@ class BinarySearchTree {
             this.findCurrentNodeWithParentNode(value, left, treeHead);
     }
 
+    isHead(node) {
+        return node === this.head;
+    }
+    
+    setNewTreeHead(node) {
+        this.head = node;
+    }
+
     remove(value, head = this.head) {
         if (!head) return null;
         const currentNodeWithParentNode = this.findCurrentNodeWithParentNode(value, head);
@@ -77,33 +85,18 @@ class BinarySearchTree {
                 parent.left = this.remove(value, parent.left)
             }
         } else {
-            const setHead = (node, currentNode = current) => {
-                if (currentNode === this.head) {
-                    this.head = node;
-                }
-            }
             const { left, right } = current;
-            if (!left && !right) {
-                setHead(null);
-                return null;
-            }
 
-            if (!left) {
-                setHead(right);
-                return right;
-            }
-
-            if (!right) {
-                setHead(left);
-                return left;
-            }
+            if (!left && !right) return this.isHead(current) ? this.setNewTreeHead(null) : null;
+            if (!left) return this.isHead(current) ? this.setNewTreeHead(right) : right;
+            if (!right) return this.isHead(current) ? this.setNewTreeHead(left) : left;
 
             const min = this.min(right);
             current.data = min;
             current.right = this.remove(min, right);
         }
-        this.head = head;
-        return head;
+
+        return this.isHead(current) ? this.setNewTreeHead(head) : head;
     }
 
     // without recursion
